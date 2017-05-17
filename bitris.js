@@ -1,4 +1,8 @@
-﻿const blockTable = [
+﻿//
+// bitris
+//
+
+const blockTable = [
     // type0
     [
         // rotate0
@@ -78,18 +82,16 @@ let field = [
     [0, 0, 0, 0, 0],
 ];
 
-const STATE = {
-    INIT: 1,
-    TITLE: 2,
-    START: 3,
-    GAMEMAIN: 4,
-    GAMEOVER: 6,
-};
+const STATE_INIT = 1;
+const STATE_TITLE = 2;
+const STATE_START = 3;
+const STATE_GAMEMAIN = 4;
+const STATE_GAMEOVER = 5;
+
+let gameState = STATE_INIT;
 
 let moveXpos = 0;
 let reqRotate = false;
-//let gameState = STATE.INIT;
-let gameState = STATE.GAMEMAIN;
 
 let blockType = -1;
 let blockXpos = 0;
@@ -101,38 +103,61 @@ let updateYposCount = 0;
 let eraseLineWait = 0;
 
 input.onButtonPressed(Button.A, () => {
-    if (gameState == STATE.GAMEMAIN && eraseLineWait == 0) {
+    if (gameState == STATE_TITLE) {
+        gameState = STATE_START;
+    } else if (gameState == STATE_GAMEMAIN && eraseLineWait == 0) {
         moveXpos = -1;
     }
 })
 
 input.onButtonPressed(Button.B, () => {
-    if (gameState == STATE.GAMEMAIN && eraseLineWait == 0) {
+    if (gameState == STATE_TITLE) {
+        gameState = STATE_START;
+    } else if (gameState == STATE_GAMEMAIN && eraseLineWait == 0) {
         moveXpos = 1;
     }
 })
 
 input.onButtonPressed(Button.AB, () => {
-    if (gameState == STATE.GAMEMAIN && eraseLineWait == 0) {
+    if (gameState == STATE_TITLE) {
+        gameState = STATE_START;
+    } else if (gameState == STATE_GAMEMAIN && eraseLineWait == 0) {
         reqRotate = true;
     }
 })
 
 basic.forever(() => {
     switch (gameState) {
-        case STATE.INIT:
+        case STATE_INIT:
+            init();
             break;
-        case STATE.TITLE:
+        case STATE_TITLE:
+            title();
             break;
-        case STATE.START:
+        case STATE_START:
+            start();
             break;
-        case STATE.GAMEMAIN:
+        case STATE_GAMEMAIN:
             gameMain();
             break;
-        case STATE.GAMEOVER:
+        case STATE_GAMEOVER:
+            gameOver();
             break;
     }
 })
+
+function init() {
+    gameState = STATE_TITLE;
+}
+
+function title() {
+    basic.showString("bitris", 100);
+}
+
+function start() {
+    basic.showString("START!");
+    gameState = STATE_GAMEMAIN;
+}
 
 function gameMain() {
     if (eraseLineWait == 0) {
@@ -146,7 +171,7 @@ function gameMain() {
             updateYposCount = 50;
         }
 
-        if (reqRotate == true) {
+        if (input.buttonIsPressed(Button.AB) == true) {
             // ブロック回転
             let newRotate = blockRotate + 1;
             if (newRotate > 3) {
@@ -198,6 +223,11 @@ function gameMain() {
     }
 
     updateLed();
+}
+
+function gameOver() {
+    basic.showString("GAME OVER");
+    gameState = STATE_TITLE;
 }
 
 // Field の隙間を詰める
