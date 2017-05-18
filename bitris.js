@@ -104,6 +104,7 @@ let eraseLineWait = 0;
 
 input.onButtonPressed(Button.A, () => {
     if (gameState == STATE_TITLE) {
+        led.stopAnimation();
         gameState = STATE_START;
     } else if (gameState == STATE_GAMEMAIN && eraseLineWait == 0) {
         moveXpos = -1;
@@ -112,6 +113,7 @@ input.onButtonPressed(Button.A, () => {
 
 input.onButtonPressed(Button.B, () => {
     if (gameState == STATE_TITLE) {
+        led.stopAnimation();
         gameState = STATE_START;
     } else if (gameState == STATE_GAMEMAIN && eraseLineWait == 0) {
         moveXpos = 1;
@@ -120,6 +122,7 @@ input.onButtonPressed(Button.B, () => {
 
 input.onButtonPressed(Button.AB, () => {
     if (gameState == STATE_TITLE) {
+        led.stopAnimation();
         gameState = STATE_START;
     } else if (gameState == STATE_GAMEMAIN && eraseLineWait == 0) {
         reqRotate = true;
