@@ -80,6 +80,7 @@ let field = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
 ];
 
 const STATE_INIT = 1;
@@ -195,7 +196,7 @@ function gameMain() {
             // ブロック初期化
             blockType = Math.random(3);
             blockXpos = 1;
-            blockYpos = -1;
+            blockYpos = 0;
             blockRotate = Math.random(4);
 
             updateYposCount = 50;
@@ -263,14 +264,14 @@ function gameOver() {
 // Field の隙間を詰める
 function packField() {
     let ylimit = 0;
-    for (let ypos = 4; ypos > ylimit;) {
+    for (let ypos = 5; ypos > ylimit;) {
         if (isEmptyFieldLine(ypos)) {
             for (let ypos2 = ypos; ypos2 > ylimit; ypos2--) {
-                for (let xpos = 0; xpos < 5; xpos++) {
+                for (let xpos = 0; xpos <= 4; xpos++) {
                     field[ypos2][xpos] = field[ypos2 - 1][xpos];
                 }
             }
-            eraseFieldLine(1 << (4 - ylimit));
+            eraseFieldLine(1 << (5 - ylimit));
             ylimit++;
         } else {
             ypos--;
@@ -280,9 +281,9 @@ function packField() {
 
 // 指定ラインの Field を消去
 function eraseFieldLine(lines: number) {
-    for (let ypos = 0; ypos < 5; ypos++) {
-        if (lines & (1 << (4 - ypos))) {
-            for (let xpos = 0; xpos < 5; xpos++) {
+    for (let ypos = 0; ypos <= 5; ypos++) {
+        if (lines & (1 << (5 - ypos))) {
+            for (let xpos = 0; xpos <= 4; xpos++) {
                 field[ypos][xpos] = 0;
             }
         }
@@ -291,7 +292,7 @@ function eraseFieldLine(lines: number) {
 
 // Field の指定Y座標が1ライン分全て空白か否かを返す
 function isEmptyFieldLine(ypos: number) {
-    for (let xpos = 0; xpos < 5; xpos++) {
+    for (let xpos = 0; xpos <= 4; xpos++) {
         if (field[ypos][xpos] != 0) {
             return 0;
         }
@@ -302,7 +303,7 @@ function isEmptyFieldLine(ypos: number) {
 // フィールドの各ラインが1ライン全て埋まっているかチェック
 function testFieldLine() {
     let ret = 0;
-    for (let ypos = 0; ypos < 5; ypos++) {
+    for (let ypos = 0; ypos <= 5; ypos++) {
         let pixels = field[ypos];
         let count = 0;
         for (let pixel of pixels) {
@@ -313,7 +314,7 @@ function testFieldLine() {
         }
         if (count == 5) {
             // 1ライン全て埋まった
-            ret |= (1 << (4 - ypos));
+            ret |= (1 << (5 - ypos));
         }
     }
 
@@ -327,7 +328,7 @@ function testBlock(btype: number, bxpos: number, bypos: number, brot: number) {
         if (bypos + yofs >= 0) {
             for (let xofs = 0; xofs < block[yofs].length; xofs++) {
                 if (block[yofs][xofs] != 0) {
-                    if (bypos + yofs > 4) {
+                    if (bypos + yofs > 5) {
                         // 下端に接触
                         return -1;
                     }
@@ -353,10 +354,10 @@ function testBlock(btype: number, bxpos: number, bypos: number, brot: number) {
 function setFieldFromBlock(btype: number, bxpos: number, bypos: number, brot: number) {
     let ypos = bypos;
     for (let blocks of blockTable[btype][brot]) {
-        if (ypos >= 0 && ypos < 5) {
+        if (ypos >= 0 && ypos <= 5) {
             let xpos = bxpos
             for (let block of blocks) {
-                if (xpos >= 0 && xpos < 5) {
+                if (xpos >= 0 && xpos <= 4) {
                     if (block == 1) {
                         field[ypos][xpos] = 1;
                     }
@@ -388,27 +389,26 @@ function updateLed() {
 
 // Field を LED に反映
 function setLedFromField(leds: Array<Array<number>>) {
-    let ypos = 0;
-    for (let pixels of field) {
+    for (let ypos = 1; ypos <= 5; ypos++) {
+        let pixels = field[ypos];
         let xpos = 0;
         for (let pixel of pixels) {
-            leds[ypos][xpos] = pixel;
+            leds[ypos - 1][xpos] = pixel;
             xpos++;
         }
-        ypos++;
     }
 }
 
-// Block を LEF に反映
+// Block を LED に反映
 function setLedFromBlock(leds: Array<Array<number>>, btype: number, bxpos: number, bypos: number, brot: number) {
     let ypos = bypos;
     for (let blocks of blockTable[btype][brot]) {
-        if (ypos >= 0 && ypos < 5) {
+        if (ypos >= 1 && ypos <= 5) {
             let xpos = bxpos
             for (let block of blocks) {
-                if (xpos >= 0 && xpos < 5) {
+                if (xpos >= 0 && xpos <= 4) {
                     if (block == 1) {
-                        leds[ypos][xpos] = 1;
+                        leds[ypos - 1][xpos] = 1;
                     }
                 }
                 xpos++;
