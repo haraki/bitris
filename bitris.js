@@ -201,7 +201,7 @@ function gameMain() {
             updateYposCount = 50;
         }
 
-        if (input.buttonIsPressed(Button.AB) == true) {
+        if (reqRotate == true) {
             // ブロック回転
             let newRotate = blockRotate + 1;
             if (newRotate > 3) {
