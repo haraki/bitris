@@ -158,7 +158,34 @@ function title() {
 }
 
 function start() {
-    basic.showString("START!");
+    basic.showLeds(`
+        . # # # .
+        # . . . # 
+        . . # # . 
+        # . . . #
+        . # # # .`
+    );
+    basic.showLeds(`
+        . # # # .
+        # . . . # 
+        . . # # . 
+        . # . . .
+        # # # # #`
+    );
+    basic.showLeds(`
+        . . # . .
+        . # # . .
+        . . # . .
+        . . # . .
+        . # # # .`
+    );
+    basic.showLeds(`
+        . # # # .
+        # . . # # 
+        # . # . # 
+        # # . . #
+        . # # # .`
+    );
     gameState = STATE_GAMEMAIN;
 }
 
