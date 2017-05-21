@@ -151,6 +151,12 @@ basic.forever(() => {
 })
 
 function init() {
+    for (let y = 0; y <= 5; y++) {
+        for (let x = 0; x <= 4; x++) {
+            field[y][x] = 0;
+        }
+    }
+    blockType = -1;
     gameState = STATE_TITLE;
 }
 
@@ -241,10 +247,12 @@ function gameMain() {
 
         // 1ライン全て埋まっているかチェック
         let eraseLines = testFieldLine();
-        if (eraseLines != 0) {
+        if (eraseLines != 0 && eraseLines != (1 << 5)) {
             // 埋まっているラインを消去
             eraseFieldLine(eraseLines);
             eraseLineWait = 10;
+        } else if (!isEmptyFieldLine(0)) {
+            gameState = STATE_GAMEOVER;
         }
     } else {
         if (--eraseLineWait <= 0) {
@@ -258,6 +266,7 @@ function gameMain() {
 
 function gameOver() {
     basic.showString("GAME OVER");
+    init();
     gameState = STATE_TITLE;
 }
 
@@ -294,13 +303,13 @@ function eraseFieldLine(lines: number) {
 function isEmptyFieldLine(ypos: number) {
     for (let xpos = 0; xpos <= 4; xpos++) {
         if (field[ypos][xpos] != 0) {
-            return 0;
+            return false;
         }
     }
-    return 1;
+    return true;
 }
 
-// フィールドの各ラインが1ライン全て埋まっているかチェック
+// フィールドのX軸方向が全て埋まっているラインを取得
 function testFieldLine() {
     let ret = 0;
     for (let ypos = 0; ypos <= 5; ypos++) {
