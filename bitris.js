@@ -265,7 +265,14 @@ function gameMain() {
 }
 
 function gameOver() {
-    basic.showString("GAME OVER");
+    for (let i = 0; i < 5; i++) {
+        basic.clearScreen();
+        basic.pause(250);
+        updateLed();
+        basic.pause(250);
+    }
+
+    basic.showString("GAMEOVER");
     init();
     gameState = STATE_TITLE;
 }
