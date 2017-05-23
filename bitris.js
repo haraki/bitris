@@ -98,6 +98,7 @@ let blockType = -1;
 let blockXpos = 0;
 let blockYpos = 0;
 let blockRotate = 0;
+let blockTypeHistory = [-1, -1];
 
 let updateYposCount = 0;
 
@@ -161,6 +162,9 @@ function init() {
             field[y][x] = 0;
         }
     }
+    for (let i = 0; i < blockTypeHistory.length; i++) {
+        blockTypeHistory[i] = -1;
+    }
     blockType = -1;
     gameState = STATE_TITLE;
 }
@@ -182,7 +186,7 @@ function gameMain() {
     if (eraseLineWait == 0) {
         if (blockType < 0) {
             // ブロック初期化
-            blockType = Math.random(3);
+            blockType = getNewBlockType();
             blockXpos = 1;
             blockYpos = 0;
             blockRotate = Math.random(4);
@@ -261,6 +265,31 @@ function gameOver() {
     highScore = nowScore;
     init();
     gameState = STATE_TITLE;
+}
+
+function getNewBlockType() {
+    let newBlockType = -1;
+
+    let sameFlag = true;
+    while (sameFlag) {
+        newBlockType = Math.random(3);
+
+        let i = 0;
+        for (i = 0; i < blockTypeHistory.length; i++) {
+            if (blockTypeHistory[i] != newBlockType) {
+                sameFlag = false;
+
+                break;
+            }
+        }
+    }
+
+    for (let i = 0; i < blockTypeHistory.length - 1; i++) {
+        blockTypeHistory[i + 1] = blockTypeHistory[i];
+    }
+    blockTypeHistory[0] = newBlockType;
+
+    return newBlockType;
 }
 
 // Field の隙間を詰める
