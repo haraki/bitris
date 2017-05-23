@@ -103,6 +103,10 @@ let updateYposCount = 0;
 
 let eraseLineWait = 0;
 
+const ALL_CLEAR_BONUS = 5;
+let nowScore = 0;
+let highScore = 0;
+
 input.onButtonPressed(Button.A, () => {
     if (gameState == STATE_TITLE) {
         led.stopAnimation();
@@ -151,6 +155,7 @@ basic.forever(() => {
 })
 
 function init() {
+    nowScore = 0;
     for (let y = 0; y <= 5; y++) {
         for (let x = 0; x <= 4; x++) {
             field[y][x] = 0;
@@ -248,6 +253,7 @@ function gameMain() {
         // 1ライン全て埋まっているかチェック
         let eraseLines = testFieldLine();
         if (eraseLines != 0 && eraseLines != (1 << 5)) {
+            addScore(eraseLines);
             // 埋まっているラインを消去
             eraseFieldLine(eraseLines);
             eraseLineWait = 10;
@@ -272,7 +278,10 @@ function gameOver() {
         basic.pause(250);
     }
 
+    basic.clearScreen();
     basic.showString("GAMEOVER");
+    basic.showNumber(nowScore);
+    highScore = nowScore;
     init();
     gameState = STATE_TITLE;
 }
@@ -450,4 +459,23 @@ function showLed(leds: Array<Array<number>>) {
         }
         ypos++;
     }
+}
+
+function addScore(eraseFieldLines: number) {
+    let add = 1;
+    for (; eraseFieldLines != 0; eraseFieldLines >>= 1) {
+        if (eraseFieldLines & (1 << 0)) {
+            nowScore += add;
+            add++;
+        }
+    }
+
+    // 全画面消去されていたらボーナス
+    for (let ypos = 0; ypos <= 5; ypos++) {
+        if (!isEmptyFieldLine(ypos)) {
+            return;
+        }
+    }
+
+    nowScore += ALL_CLEAR_BONUS;
 }
