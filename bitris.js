@@ -170,34 +170,11 @@ function title() {
 }
 
 function start() {
-    basic.showLeds(`
-        . # # # .
-        # . . . # 
-        . . # # . 
-        # . . . #
-        . # # # .`
-    );
-    basic.showLeds(`
-        . # # # .
-        # . . . # 
-        . . # # . 
-        . # . . .
-        # # # # #`
-    );
-    basic.showLeds(`
-        . . # . .
-        . # # . .
-        . . # . .
-        . . # . .
-        . # # # .`
-    );
-    basic.showLeds(`
-        . # # # .
-        # . . # # 
-        # . # . # 
-        # # . . #
-        . # # # .`
-    );
+    basic.clearScreen();
+    basic.showNumber(3);
+    basic.showNumber(2);
+    basic.showNumber(1);
+    basic.showNumber(0);
     gameState = STATE_GAMEMAIN;
 }
 
