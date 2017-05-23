@@ -170,6 +170,7 @@ function init() {
 }
 
 function title() {
+    basic.clearScreen();
     basic.showString("bitris", 100);
 }
 
@@ -261,7 +262,9 @@ function gameOver() {
 
     basic.clearScreen();
     basic.showString("GAMEOVER");
+    basic.clearScreen();
     basic.showNumber(nowScore);
+    basic.pause(1000);
     highScore = nowScore;
     init();
     gameState = STATE_TITLE;
